@@ -1,0 +1,481 @@
+@import "tailwindcss";
+@import "./styles/fonts.css";
+
+/*
+ * Sistema visual do Touro's Burguer.
+ *
+ * As cores são as da própria casa — o selo, a embalagem e o lanche:
+ *
+ *   noite  — o preto do selo e da sacola preta de entrega
+ *   ouro   — o dourado do touro e do letreiro (#D6A650, medido no logo)
+ *   creme  — o texto sobre a noite
+ *   kraft  — o papel pardo da sacola "Você pediu, chegou". Fundo das seções
+ *            de consulta, onde o preto é tinta
+ *   brasa  — a chapa. Só em brilho e pontos quentes, nunca em texto
+ *   brioche— o amarelo do pão da casa (é amarelo mesmo, não dourado)
+ */
+@theme {
+  --color-noite: #0c0b0a;
+  --color-noite-2: #14120f;
+  --color-carvao: #1f1b17;
+  --color-risco: #302922;
+  --color-cinza: #9f9587;
+  --color-nevoa: #d5ccbe;
+  --color-creme: #f5ecdc;
+
+  --color-kraft: #e7d7b8;
+  --color-kraft-2: #d9c49c;
+  --color-tinta: #5a4a35;
+  --color-tinta-2: #362b1f;
+
+  --color-ouro: #d6a650;
+  --color-ouro-claro: #f0cd86;
+  --color-ouro-escuro: #9c6f26;
+  --color-brasa: #e2572b;
+  --color-brioche: #f2b31b;
+  --color-alface: #7cb342;
+
+  --font-display: "Oswald", "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
+  --font-sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+
+  --ease-touro: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-corte: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-noite);
+    color: var(--color-creme);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: auto;
+    /* A barra fixa do celular não pode cobrir a âncora de destino. */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-ouro);
+    color: var(--color-noite);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ouro);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  [data-tema="claro"] :focus-visible {
+    outline-color: var(--color-tinta-2);
+  }
+
+  /* Números em coluna: preço alinhado é preço que se compara de relance. */
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@utility container-x {
+  width: 100%;
+  max-width: 88rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (min-width: 640px) {
+    padding-inline: 2rem;
+  }
+  @media (min-width: 1024px) {
+    padding-inline: 3.5rem;
+  }
+}
+
+/* O título de cartaz: Oswald em caixa alta, apertado — como no cardápio. */
+@utility cartaz {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+}
+
+/* Rótulo pequeno em mono, o "sobretítulo" das seções: registro de etiqueta. */
+@utility rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/*
+ * O dourado do selo em texto grande: um degradê do claro ao escuro, como o
+ * metal do logo. Só em título — em texto pequeno o degradê vira sujeira.
+ */
+@utility ouro-metal {
+  background: linear-gradient(
+    172deg,
+    var(--color-ouro-claro) 0%,
+    var(--color-ouro) 45%,
+    var(--color-ouro-escuro) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fio fino que separa blocos. */
+@utility fio {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, currentColor 12%, currentColor 88%, transparent);
+  opacity: 0.25;
+}
+
+/*
+ * Papel kraft.
+ *
+ * Um SVG de ruído fractal embutido, e não uma imagem: são ~400 bytes, escalam
+ * sem serrilhar e não pedem uma requisição a mais. A fibra do papel pardo é
+ * mais grossa que a de um papel branco, e o ruído também.
+ */
+@utility kraft {
+  background-color: var(--color-kraft);
+  color: var(--color-noite);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.26 0 0 0 0 0.14 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* A noite com grão: o fundo preto da embalagem, que não é um preto chapado. */
+@utility grao {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.9 0 0 0 0 0.7 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Botões ─────────────────────────────────────────────────────────────── */
+
+@utility botao {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    color 400ms var(--ease-touro),
+    border-color 400ms var(--ease-touro),
+    transform 400ms var(--ease-touro);
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    transform: translateY(101%);
+    transition: transform 520ms var(--ease-touro);
+  }
+  &:hover::before {
+    transform: translateY(0);
+  }
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/* O botão principal é o dourado do selo, com tinta preta — 9:1 de contraste. */
+@utility botao-ouro {
+  background: linear-gradient(180deg, var(--color-ouro-claro), var(--color-ouro) 55%);
+  color: var(--color-noite);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 244, 214, 0.6),
+    0 10px 30px -12px rgba(214, 166, 80, 0.7);
+  &::before {
+    background: var(--color-creme);
+  }
+}
+
+/* Sobre o kraft, o principal é preto — como a sacola preta da casa. */
+@utility botao-noite {
+  background: var(--color-noite);
+  color: var(--color-creme);
+  &::before {
+    background: var(--color-carvao);
+  }
+}
+
+@utility botao-linha {
+  border: 1px solid color-mix(in oklab, currentColor 35%, transparent);
+  &::before {
+    background: currentColor;
+    opacity: 0.08;
+  }
+}
+
+/* ── Animações-base ─────────────────────────────────────────────────────── */
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes pulso {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.pulso::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: inherit;
+  animation: pulso 2.2s var(--ease-touro) infinite;
+}
+
+@keyframes varredura {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* O brilho que passa pelo metal do selo. */
+@keyframes reflexo {
+  0%,
+  55% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+  }
+}
+
+/* ── Desenho em corte: as camadas entram de cima ────────────────────────── */
+
+@keyframes camada-entra {
+  from {
+    opacity: 0;
+    translate: 0 -46px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.camada {
+  transition: transform 620ms var(--ease-touro);
+}
+
+.camada-nova {
+  animation: camada-entra 620ms var(--ease-touro) both;
+}
+
+/* ── Preloader: o selo acende ───────────────────────────────────────────── */
+
+@keyframes selo-surge {
+  0% {
+    transform: scale(0.86);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes abertura-sai {
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes selo-sai {
+  to {
+    transform: translateY(-8%) scale(0.94);
+    opacity: 0;
+  }
+}
+
+.abertura-selo {
+  animation: selo-surge 900ms var(--ease-touro) both;
+}
+
+.abertura-saindo {
+  animation: abertura-sai 900ms var(--ease-corte) 160ms both;
+}
+
+.abertura-saindo .abertura-selo {
+  animation: selo-sai 420ms var(--ease-corte) both;
+}
+
+/* ── Herói ──────────────────────────────────────────────────────────────── */
+
+/*
+ * REGRA: o estado escondido só existe com a classe `heroi-armado`. Sem ela —
+ * JS que não rodou, erro no meio do caminho — o título nasce visível.
+ */
+@keyframes linha-sobe {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes aparece {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.heroi-armado:not(.heroi-pronto) [data-linha] > span,
+.heroi-armado:not(.heroi-pronto) [data-surge] {
+  opacity: 0;
+}
+
+.heroi-pronto [data-linha] > span {
+  animation: linha-sobe 1000ms var(--ease-touro) both;
+}
+
+.heroi-pronto [data-linha]:nth-of-type(2) > span {
+  animation-delay: 100ms;
+}
+
+.heroi-pronto [data-linha]:nth-of-type(3) > span {
+  animation-delay: 200ms;
+}
+
+.heroi-pronto [data-surge] {
+  animation: aparece 900ms var(--ease-touro) both;
+  animation-delay: calc(400ms + var(--i, 0) * 90ms);
+}
+
+/* ── Menu em tela cheia ─────────────────────────────────────────────────── */
+
+@keyframes menu-abre {
+  from {
+    clip-path: circle(0% at calc(100% - 3rem) 2.5rem);
+  }
+  to {
+    clip-path: circle(150% at calc(100% - 3rem) 2.5rem);
+  }
+}
+
+@keyframes menu-item {
+  from {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menu-painel {
+  animation: menu-abre 800ms var(--ease-corte) both;
+}
+
+.menu-item {
+  animation: menu-item 700ms var(--ease-touro) both;
+  animation-delay: calc(200ms + var(--i, 0) * 60ms);
+}
+
+/* ── Painel "monte o seu" ───────────────────────────────────────────────── */
+
+@keyframes painel-sobe {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes painel-lado {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes veu {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.painel {
+  animation: painel-sobe 560ms var(--ease-touro) both;
+  @media (min-width: 1024px) {
+    animation-name: painel-lado;
+  }
+}
+
+.veu {
+  animation: veu 400ms ease-out both;
+}
+
+/* ── Movimento reduzido: caminho alternativo completo ───────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  .heroi-armado [data-linha] > span,
+  .heroi-armado [data-surge] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
