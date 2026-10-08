@@ -1,0 +1,50 @@
+{
+ "bacon-catupiry": {
+  "cor": "#787878",
+  "proporcao": 0.8
+ },
+ "bacon-cheddar": {
+  "cor": "#585858",
+  "proporcao": 0.8
+ },
+ "cheese-burguer": {
+  "cor": "#384858",
+  "proporcao": 0.8
+ },
+ "na-mao": {
+  "cor": "#585858",
+  "proporcao": 0.8
+ },
+ "prato": {
+  "cor": "#585858",
+  "proporcao": 0.8
+ },
+ "t-chicken": {
+  "cor": "#684808",
+  "proporcao": 0.8
+ },
+ "touros-tudo": {
+  "cor": "#f8e8c8",
+  "proporcao": 1
+ },
+ "video-chapa": {
+  "cor": "#383838",
+  "proporcao": 0.5625
+ },
+ "video-cheddar": {
+  "cor": "#383848",
+  "proporcao": 0.5625
+ },
+ "video-embalando": {
+  "cor": "#584838",
+  "proporcao": 0.5625
+ },
+ "video-giro": {
+  "cor": "#485868",
+  "proporcao": 0.5625
+ },
+ "video-montagem": {
+  "cor": "#787878",
+  "proporcao": 0.5625
+ }
+}
